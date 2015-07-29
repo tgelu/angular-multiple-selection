@@ -40,7 +40,7 @@ function offset(element) {
     };
 }
 angular.module('multipleSelection', [])
-    .directive('multipleSelectionItem', [function() {
+    .directive('multipleSelectionItem', ['$rootScope', function($rootScope) {
         return {
             scope: true,
             restrict: 'A',
@@ -54,6 +54,7 @@ angular.module('multipleSelection', [])
                     if (element.scope().isSelected) {
                         if (event.ctrlKey) {
                             element.scope().isSelected = false;
+                            $rootScope.$emit('selection:deselect', childs[i].scope());
                             element.scope().$apply();
                         }
                     } else {
@@ -64,12 +65,14 @@ angular.module('multipleSelection', [])
                                     if (childs[i].scope().isSelecting === true || childs[i].scope().isSelected === true) {
                                         childs[i].scope().isSelecting = false;
                                         childs[i].scope().isSelected = false;
+                                        $rootScope.$emit('selection:deselect', childs[i].scope());
                                         childs[i].scope().$apply();
                                     }
                                 }
                             }
                         }
                         element.scope().isSelected = true;
+                        $rootScope.$emit('selection:select', element.scope());
                         element.scope().$apply();
 
                     }
@@ -78,7 +81,7 @@ angular.module('multipleSelection', [])
             }
         };
     }])
-    .directive('multipleSelectionZone', ['$document', function($document) {
+    .directive('multipleSelectionZone', ['$rootScope', '$document', function($rootScope, $document) {
         return {
             scope: true,
             restrict: 'A',
@@ -168,11 +171,13 @@ angular.module('multipleSelection', [])
                         if (checkElementHitting(transformBox(offset(childs[i][0]).left, offset(childs[i][0]).top, offset(childs[i][0]).left + childs[i].prop('offsetWidth'), offset(childs[i][0]).top + childs[i].prop('offsetHeight')), transformBox(startX, startY, event.pageX, event.pageY))) {
                             if (childs[i].scope().isSelecting === false) {
                                 childs[i].scope().isSelecting = true;
+                                $rootScope.$emit('selection:select', childs[i].scope());
                                 childs[i].scope().$apply();
                             }
                         } else {
                             if (childs[i].scope().isSelecting === true) {
                                 childs[i].scope().isSelecting = false;
+                                $rootScope.$emit('selection:deselect', childs[i].scope());
                                 childs[i].scope().$apply();
                             }
                         }
@@ -223,6 +228,7 @@ angular.module('multipleSelection', [])
                             if (childs[i].scope().isSelecting === true || childs[i].scope().isSelected === true) {
                                 childs[i].scope().isSelecting = false;
                                 childs[i].scope().isSelected = false;
+                                $rootScope.$emit('selection:deselect', childs[i].scope());
                                 childs[i].scope().$apply();
                             }
                         }
