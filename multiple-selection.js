@@ -93,6 +93,19 @@ angular.module('multipleSelection', [])
                     startY = 0;
                 var helper;
 
+                function getMouseEventPosition(event) {
+                    if (event.pageX || event.pageY) {
+                        return {
+                            x: event.pageX,
+                            y: event.pageY
+                        };
+                    }
+                    return {
+                        x: event.clientX + document.documentElement.scrollLeft,
+                        y: event.clientY + document.documentElement.scrollTop
+                    };
+                }
+
                 /**
                  * Check that 2 boxes hitting
                  * @param  {Object} box1
@@ -163,12 +176,13 @@ angular.module('multipleSelection', [])
                 function mousemove(event) {
                     // Prevent default dragging of selected content
                     event.preventDefault();
+                    var eventPosition = getMouseEventPosition(event);
                     // Move helper
-                    moveSelectionHelper(helper, startX, startY, event.pageX, event.pageY);
+                    moveSelectionHelper(helper, startX, startY, eventPosition.x, eventPosition.y);
                     // Check items is selecting
                     var childs = getSelectableElements(element);
                     for (var i = 0; i < childs.length; i++) {
-                        if (checkElementHitting(transformBox(offset(childs[i][0]).left, offset(childs[i][0]).top, offset(childs[i][0]).left + childs[i].prop('offsetWidth'), offset(childs[i][0]).top + childs[i].prop('offsetHeight')), transformBox(startX, startY, event.pageX, event.pageY))) {
+                        if (checkElementHitting(transformBox(offset(childs[i][0]).left, offset(childs[i][0]).top, offset(childs[i][0]).left + childs[i].prop('offsetWidth'), offset(childs[i][0]).top + childs[i].prop('offsetHeight')), transformBox(startX, startY, eventPosition.x, eventPosition.y))) {
                             if (childs[i].scope().isSelecting === false) {
                                 childs[i].scope().isSelecting = true;
                                 $rootScope.$emit('selection:select', childs[i].scope());
@@ -193,6 +207,7 @@ angular.module('multipleSelection', [])
                 function mouseup(event) {
                     // Prevent default dragging of selected content
                     event.preventDefault();
+                    var eventPosition = getMouseEventPosition(event);
                     // Remove helper
                     helper.remove();
                     // Change all selecting items to selected
@@ -205,7 +220,7 @@ angular.module('multipleSelection', [])
                             childs[i].scope().isSelected = event.ctrlKey ? !childs[i].scope().isSelected : true;
                             childs[i].scope().$apply();
                         } else {
-                            if (checkElementHitting(transformBox(childs[i].prop('offsetLeft'), childs[i].prop('offsetTop'), childs[i].prop('offsetLeft') + childs[i].prop('offsetWidth'), childs[i].prop('offsetTop') + childs[i].prop('offsetHeight')), transformBox(event.pageX, event.pageY, event.pageX, event.pageY))) {
+                            if (checkElementHitting(transformBox(childs[i].prop('offsetLeft'), childs[i].prop('offsetTop'), childs[i].prop('offsetLeft') + childs[i].prop('offsetWidth'), childs[i].prop('offsetTop') + childs[i].prop('offsetHeight')), transformBox(eventPosition.x, eventPosition.y, eventPosition.x, eventPosition.y))) {
                                 if (childs[i].scope().isSelected === false) {
                                     childs[i].scope().isSelected = true;
                                     childs[i].scope().$apply();
@@ -221,6 +236,7 @@ angular.module('multipleSelection', [])
                 element.on('mousedown', function(event) {
                     // Prevent default dragging of selected content
                     event.preventDefault();
+                    var eventPosition = getMouseEventPosition(event);
                     if (!event.ctrlKey) {
                         // Skip all selected or selecting items
                         var childs = getSelectableElements(element);
@@ -234,8 +250,8 @@ angular.module('multipleSelection', [])
                         }
                     }
                     // Update start coordinates
-                    startX = event.pageX;
-                    startY = event.pageY;
+                    startX = eventPosition.x;
+                    startY = eventPosition.y;
                     // Create helper
                     helper = angular
                         .element("<div></div>")
