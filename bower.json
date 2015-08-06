@@ -1,8 +1,9 @@
 {
   "name": "angular-multiple-selection",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "authors": [
-    "Maksym Pomazan"
+    "Maksym Pomazan",
+    "Gelu Timoficiuc"
   ],
   "description": "Multiple Selection module for AngularJS",
   "main": "multiple-selection.js",

@@ -1,7 +1,7 @@
 /**
  * Angular JS multiple-selection module
  * @author Maksym Pomazan
- * @version 0.0.3
+ * @version 0.0.5
  */
 function getSelectableElements(element) {
     var out = [];
