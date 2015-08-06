@@ -47,7 +47,6 @@ angular.module('multipleSelection', [])
             link: function(scope, element, iAttrs, controller) {
 
                 scope.isSelectable = true;
-                scope.isSelecting = false;
                 scope.isSelected = false;
 
                 element.on('mousedown', function(event) {
@@ -62,8 +61,7 @@ angular.module('multipleSelection', [])
                             var childs = getSelectableElements(element.parent());
                             for (var i = 0; i < childs.length; i++) {
                                 if (childs[i].scope().isSelectable) {
-                                    if (childs[i].scope().isSelecting === true || childs[i].scope().isSelected === true) {
-                                        childs[i].scope().isSelecting = false;
+                                    if (childs[i].scope().isSelected === true) {
                                         childs[i].scope().isSelected = false;
                                         $rootScope.$emit('selection:deselect', childs[i].scope());
                                         childs[i].scope().$apply();
@@ -183,14 +181,14 @@ angular.module('multipleSelection', [])
                     var childs = getSelectableElements(element);
                     for (var i = 0; i < childs.length; i++) {
                         if (checkElementHitting(transformBox(offset(childs[i][0]).left, offset(childs[i][0]).top, offset(childs[i][0]).left + childs[i].prop('offsetWidth'), offset(childs[i][0]).top + childs[i].prop('offsetHeight')), transformBox(startX, startY, eventPosition.x, eventPosition.y))) {
-                            if (childs[i].scope().isSelecting === false) {
-                                childs[i].scope().isSelecting = true;
+                            if (childs[i].scope().isSelected === false) {
+                                childs[i].scope().isSelected = true;
                                 $rootScope.$emit('selection:select', childs[i].scope());
                                 childs[i].scope().$apply();
                             }
                         } else {
-                            if (childs[i].scope().isSelecting === true) {
-                                childs[i].scope().isSelecting = false;
+                            if (childs[i].scope().isSelected === true) {
+                                childs[i].scope().isSelected = false;
                                 $rootScope.$emit('selection:deselect', childs[i].scope());
                                 childs[i].scope().$apply();
                             }
@@ -210,24 +208,6 @@ angular.module('multipleSelection', [])
                     var eventPosition = getMouseEventPosition(event);
                     // Remove helper
                     helper.remove();
-                    // Change all selecting items to selected
-                    var childs = getSelectableElements(element);
-
-                    for (var i = 0; i < childs.length; i++) {
-                        if (childs[i].scope().isSelecting === true) {
-                            childs[i].scope().isSelecting = false;
-
-                            childs[i].scope().isSelected = event.ctrlKey ? !childs[i].scope().isSelected : true;
-                            childs[i].scope().$apply();
-                        } else {
-                            if (checkElementHitting(transformBox(childs[i].prop('offsetLeft'), childs[i].prop('offsetTop'), childs[i].prop('offsetLeft') + childs[i].prop('offsetWidth'), childs[i].prop('offsetTop') + childs[i].prop('offsetHeight')), transformBox(eventPosition.x, eventPosition.y, eventPosition.x, eventPosition.y))) {
-                                if (childs[i].scope().isSelected === false) {
-                                    childs[i].scope().isSelected = true;
-                                    childs[i].scope().$apply();
-                                }
-                            }
-                        }
-                    }
                     // Remove listeners
                     $document.off('mousemove', mousemove);
                     $document.off('mouseup', mouseup);
@@ -241,8 +221,7 @@ angular.module('multipleSelection', [])
                         // Skip all selected or selecting items
                         var childs = getSelectableElements(element);
                         for (var i = 0; i < childs.length; i++) {
-                            if (childs[i].scope().isSelecting === true || childs[i].scope().isSelected === true) {
-                                childs[i].scope().isSelecting = false;
+                            if (childs[i].scope().isSelected === true) {
                                 childs[i].scope().isSelected = false;
                                 $rootScope.$emit('selection:deselect', childs[i].scope());
                                 childs[i].scope().$apply();
