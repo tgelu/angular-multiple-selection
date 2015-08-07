@@ -186,7 +186,7 @@ angular.module('multipleSelection', [])
                                 $rootScope.$emit('selection:select', childs[i].scope());
                                 childs[i].scope().$apply();
                             }
-                        } else {
+                        } else if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
                             if (childs[i].scope().isSelected === true) {
                                 childs[i].scope().isSelected = false;
                                 $rootScope.$emit('selection:deselect', childs[i].scope());
