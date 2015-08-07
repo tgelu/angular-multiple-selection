@@ -51,13 +51,13 @@ angular.module('multipleSelection', [])
 
                 element.on('mousedown', function(event) {
                     if (element.scope().isSelected) {
-                        if (event.ctrlKey) {
+                        if (event.ctrlKey || event.metaKey || event.shiftKey) {
                             element.scope().isSelected = false;
                             $rootScope.$emit('selection:deselect', childs[i].scope());
                             element.scope().$apply();
                         }
                     } else {
-                        if (!event.ctrlKey) {
+                        if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
                             var childs = getSelectableElements(element.parent());
                             for (var i = 0; i < childs.length; i++) {
                                 if (childs[i].scope().isSelectable) {
@@ -217,7 +217,7 @@ angular.module('multipleSelection', [])
                     // Prevent default dragging of selected content
                     event.preventDefault();
                     var eventPosition = getMouseEventPosition(event);
-                    if (!event.ctrlKey) {
+                    if (!event.ctrlKey && !event.metaKey && !event.shiftKey) {
                         // Skip all selected or selecting items
                         var childs = getSelectableElements(element);
                         for (var i = 0; i < childs.length; i++) {
