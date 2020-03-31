@@ -1,4 +1,4 @@
-# Angular Multiple Selection Module
+# Angular Multiple Selection Module (DEPRECATED)
 Simplest way to make your angular items selectable
 
 [Demo Page](http://maxazan.github.io/angular-multiple-selection/)
